@@ -1,21 +1,23 @@
 project(rsync)
 
-if(${TARGET_ARCH} STREQUAL "ARM")
-    set(CPPFLAGS "-I/opt/homebrew/include")
-    set(LDFLAGS "-L/opt/homebrew/lib")
-elseif(${TARGET_ARCH} STREQUAL "AMD")
-    set(CPPFLAGS "-I/usr/local/include")
-    set(LDFLAGS "-L/usr/local/lib")
+message(STATUS "arch info: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+
+if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
+    set(CPP_FLAGS "-I/opt/homebrew/include")
+    set(LD_FLAGS "-L/opt/homebrew/lib")
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x86_64")
+    set(CPP_FLAGS "-I/usr/local/include")
+    set(LD_FLAGS "-L/usr/local/lib")
 else()
-    message(FATAL_ERROR "Unsupported architecture: ${TARGET_ARCH}")
+    message(FATAL_ERROR "Unsupported architecture: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 endif()
 
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rsync
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/configure --disable-md2man ${CPPFLAGS} ${LDFLAGS}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/configure --disable-md2man CPPFLAGS=${CPP_FLAGS} LDFLAGS=${LD_FLAGS}
     COMMAND make
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Configuring and building rsync for ${TARGET_ARCH}"
+    COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
     VERBATIM
 )
 
