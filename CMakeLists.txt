@@ -17,7 +17,7 @@ if(APPLE)
 	add_custom_target(
 		rsync_build ALL
 		COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/configure ${RSYNC_CONFIG_OPTS} CPPFLAGS=${CPP_FLAGS} LDFLAGS=${LD_FLAGS}
-		COMMAND make -j 4
+		COMMAND make -j
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
 		VERBATIM
@@ -27,7 +27,7 @@ elseif(NOT WIN32)
 	    rsync_build ALL
 	    COMMAND bash -c "test -e rsync || \
 		${CMAKE_CURRENT_SOURCE_DIR}/configure ${RSYNC_CONFIG_OPTS_STR} \
-		&& make -j 4"
+		&& make -j"
 	    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	    COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
 	    VERBATIM
@@ -45,7 +45,7 @@ elseif(EXISTS ${CYGWIN_PATH})
 		COMMAND ${CMAKE_COMMAND} -E env "PATH=${CYGWIN_PATH}/bin;$ENV{PATH}" ${CYGWIN_PATH}/bin/bash.exe -c " \
 		        test -e rsync.exe || \
 				${RSYNC_CYGWIN_PATH}/configure ${RSYNC_CONFIG_OPTS_STR} \
-				&& make -j 4"
+				&& make -j"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
 		USES_TERMINAL
