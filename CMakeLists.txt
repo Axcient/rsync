@@ -2,7 +2,7 @@ project(rsync)
 
 message(STATUS "arch info: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
-set(RSYNC_CONFIG_OPTS --disable-md2man --with-included-popt --with-included-zlib --disable-xxhash --disable-zstd --disable-lz4 --disable-openssl)
+set(RSYNC_CONFIG_OPTS --config-cache --disable-md2man --with-included-popt --with-included-zlib --disable-xxhash --disable-zstd --disable-lz4 --disable-openssl)
 list(JOIN RSYNC_CONFIG_OPTS " " RSYNC_CONFIG_OPTS_STR)
 if(APPLE)
 	if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
@@ -33,6 +33,7 @@ elseif(NOT WIN32)
 	    VERBATIM
     )
 elseif(EXISTS ${CYGWIN_PATH})
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.cache.in ${CMAKE_CURRENT_BINARY_DIR}/config.cache COPYONLY)
 	execute_process(
 		  COMMAND ${CMAKE_COMMAND} -E env "PATH=${CYGWIN_PATH}/bin;$ENV{PATH}" ${CYGWIN_PATH}/bin/cygpath.exe "${CMAKE_CURRENT_SOURCE_DIR}"
 		  OUTPUT_VARIABLE RSYNC_CYGWIN_PATH
@@ -48,7 +49,6 @@ elseif(EXISTS ${CYGWIN_PATH})
 				&& make -j"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
-		USES_TERMINAL
 		VERBATIM
 	)
 else()
@@ -56,7 +56,6 @@ else()
 	add_custom_target(
 		rsync_build ALL
 		COMMAND ${CMAKE_COMMAND} -E echo 'Skip build rsync'
-		USES_TERMINAL
 	)
 endif()
 
