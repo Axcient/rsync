@@ -49,7 +49,7 @@ elseif(EXISTS ${CYGWIN_PATH})
 				&& make -j"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
-		VERBATIM
+		USES_TERMINAL
 	)
 else()
 	message(INFO " Skipping build rsync")
