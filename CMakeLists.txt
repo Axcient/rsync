@@ -40,7 +40,10 @@ elseif(EXISTS ${CYGWIN_PATH})
 		)
 	message(INFO " Compile rsync by cygwin ${CMAKE_CURRENT_SOURCE_DIR} -> ${RSYNC_CYGWIN_PATH}")
 
-	file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/aclocal.m4 "")
+	if(NOT EXISTS  ${CMAKE_CURRENT_BINARY_DIR}/aclocal.m4)
+		file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/aclocal.m4 "")
+	endif()
+
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.win.in ${CMAKE_CURRENT_BINARY_DIR}/config.h.in COPYONLY)
 	configure_file(${CMAKE_CURRENT_BINARY_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h COPYONLY)
 	file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/configure.sh "exit 0")
@@ -67,6 +70,7 @@ elseif(EXISTS ${CYGWIN_PATH})
 		COMMAND ${CMAKE_COMMAND} -E env "PATH=${CYGWIN_PATH}/bin;$ENV{PATH}" ${CYGWIN_PATH}/bin/make.exe -j
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMENT "Configuring and building rsync for ${CMAKE_HOST_SYSTEM_PROCESSOR}"
+		USES_TERMINAL
 	)
 else()
 	message(INFO " Skipping build rsync")
