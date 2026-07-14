@@ -173,6 +173,8 @@
 #define MAX_BASIS_DIRS 20
 #define MAX_SERVER_ARGS (MAX_BASIS_DIRS*2 + 100)
 
+#define MAX_WIRE_NSEC          999999999
+
 #define COMPARE_DEST 1
 #define COPY_DEST 2
 #define LINK_DEST 3
