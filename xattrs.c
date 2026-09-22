@@ -171,7 +171,7 @@ static ssize_t get_xattr_names(const char *fname, int fd)
 			rsyserr(FERROR_XFER, errno,
 				"get_xattr_names: llistxattr(%s,%s) failed",
 				full_fname(fname), big_num(arg));
-			return -1;
+			return strcmp(fname, ".") == 0 ? 0 : -1;
 		}
 		list_len = fd >= 0 ? sys_flistxattr(fd, NULL, 0)
 				   : sys_llistxattr(fname, NULL, 0);
