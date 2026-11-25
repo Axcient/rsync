@@ -2368,15 +2368,19 @@ struct file_list *send_file_list(int f, int argc, char *argv[])
 
 		dirlen = dir ? strlen(dir) : 0;
 		if (dirlen != lastdir_len || (dirlen && memcmp(lastdir, dir, dirlen) != 0)) {
-			if (!change_pathname(NULL, dir, -dirlen))
-				goto bad_path;
+			if (!change_pathname(NULL, dir, -dirlen)) {
+				rprintf(FERROR,
+				    "cannot access top-level source path: %s\n",
+				    dir ? full_fname(dir) : full_fname(orig_dir));
+				exit_cleanup(RERR_FILESELECT);
+			}
 			lastdir = pathname;
 			lastdir_len = pathname_len;
 		} else if (!change_pathname(NULL, lastdir, lastdir_len)) {
-		    bad_path:
-			if (implied_dot_dir < 0)
-				implied_dot_dir = 0;
-			continue;
+			rprintf(FERROR,
+			    "cannot access top-level source path: %s\n",
+			    lastdir ? full_fname(lastdir) : full_fname(orig_dir));
+			exit_cleanup(RERR_FILESELECT);
 		}
 
 		if (implied_dot_dir < 0) {
